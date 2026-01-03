@@ -10,6 +10,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "feedbacks")
 @Getter
@@ -21,4 +23,12 @@ public class Feedback {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    private String descricao;
+
+    private Integer nota;
+
+    private String urgencia;
+
+    private LocalDateTime criadoEm;
 }
