@@ -10,8 +10,6 @@ services:
     networks:
       - classinsight-network
     restart: unless-stopped
-    depends_on:
-      - classinsight-postgres
     env_file:
       - .env
     environment:
@@ -25,25 +23,7 @@ services:
     volumes:
       - classinsight-logs:/var/log/classinsight
 
-  classinsight-postgres:
-    image: postgres:16-alpine
-    # Load Postgres init vars from .env as well (keeps secrets out of compose file)
-    env_file:
-      - .env
-    environment:
-      - POSTGRES_DB=${POSTGRES_DB}
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-    volumes:
-      - user_postgres_data:/var/lib/postgresql/data
-    ports:
-      - "5433:5432"
-    networks:
-      - classinsight-network
-    restart: unless-stopped
-
 volumes:
-  user_postgres_data:
   classinsight-logs:
 
 networks:
