@@ -2,17 +2,12 @@ FROM maven:3.9.6-amazoncorretto-21 AS builder
 
 WORKDIR /app
 
+# Copia apenas o necessário para o build (pom e código fonte)
 COPY pom.xml .
-COPY classinsight/pom.xml classinsight/
+COPY src ./src
 
-RUN mvn dependency:go-offline -B
-
-COPY classinsight/src classinsight/src
-
-ARG SERVICE_NAME
-ENV SERVICE_NAME=${SERVICE_NAME}
-
-RUN mvn clean package -pl ${SERVICE_NAME} -am -DskipTests
+# Baixa dependências e empacota (pulando testes para acelerar)
+RUN mvn -B -DskipTests package
 
 FROM amazoncorretto:21-alpine AS runtime
 
@@ -23,10 +18,15 @@ RUN addgroup -g 1000 appgroup && \
 # Set working directory
 WORKDIR /app
 
+# Ensure log directory exists and is writable by the non-root user
+RUN mkdir -p /var/log/classinsight && \
+    chown -R appuser:appgroup /var/log/classinsight
+
 ARG SERVICE_NAME
 ENV SERVICE_NAME=${SERVICE_NAME}
 
-COPY --from=builder /app/${SERVICE_NAME}/target/${SERVICE_NAME}-*.jar app.jar
+# Copia o JAR gerado pelo estágio de build
+COPY --from=builder /app/target/*.jar app.jar
 
 EXPOSE 8080
 

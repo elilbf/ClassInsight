@@ -1,9 +1,9 @@
 server:
-  port: 8082
+  port: 8080
 
 spring:
   datasource:
-    url: jdbc:postgresql://user-postgres:5432/classinsight_db
+    url: jdbc:postgresql://localhost:5433/classinsight_db
     driver-class-name: org.postgresql.Driver
     username: classinsight_user
     password: classinsight_pass
@@ -17,6 +17,6 @@ logging:
     root: ERROR
     br.com.edu.classinsight: INFO
   file:
-    name: /var/log/classinsight/application.log
+    name: ./logs/application.log
   pattern:
     file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
